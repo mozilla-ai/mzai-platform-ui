@@ -1,0 +1,79 @@
+{
+  "id": "4d8184b9-9ba0-4243-99b3-b6f8c8e178ad",
+  "description": "A pipeline that converts a document into a podcast.",
+  "steps": [
+    {
+      "id": "downloader",
+      "description": "downloader workflow step",
+      "inputs": [
+        {
+          "name": "document_url",
+          "type": "string",
+          "required": true
+        }
+      ],
+      "image": "mzdotai/workflow-components-downloader:latest"
+    },
+    {
+      "id": "transformer",
+      "description": "transformer workflow step",
+      "inputs": [
+        {
+          "name": "file_type",
+          "type": "string",
+          "default_value": ".html"
+        }
+      ],
+      "image": "mzdotai/workflow-components-transformer:latest"
+    },
+    {
+      "id": "scriptwriter",
+      "description": "scriptwriter workflow step",
+      "inputs": [
+        {
+          "name": "host_name",
+          "type": "string",
+          "default_value": "Sarah"
+        },
+        {
+          "name": "cohost_name",
+          "type": "string",
+          "default_value": "Michael"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "default_value": "bartowski/Qwen2.5-7B-Instruct-GGUF/Qwen2.5-7B-Instruct-Q8_0.gguf"
+        }
+      ],
+      "image": "mzdotai/workflow-components-scriptwriter:latest"
+    },
+    {
+      "id": "performer",
+      "description": "performer workflow step",
+      "inputs": [
+        {
+          "name": "host_voice_profile",
+          "type": "string",
+          "default_value": "af_sarah"
+        },
+        {
+          "name": "cohost_voice_profile",
+          "type": "string",
+          "default_value": "am_michael"
+        },
+        {
+          "name": "audio_format",
+          "type": "string",
+          "default_value": "WAV"
+        },
+        {
+          "name": "model",
+          "type": "string",
+          "default_value": "hexgrad/Kokoro-82M"
+        }
+      ],
+      "image": "mzdotai/workflow-components-performer:latest"
+    }
+  ]
+}
