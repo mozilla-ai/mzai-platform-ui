@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useVueFlow, VueFlow } from '@vue-flow/core'
 import { Background, MiniMap, Controls } from '@vue-flow/additional-components'
 import pipelineData from '../helpers/sample-response.json'
