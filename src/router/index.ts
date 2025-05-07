@@ -7,11 +7,11 @@ const routes: Array<RouteRecordRaw> = [
   { path: '/login', component: () => LoginView, name: 'Login' },
   { path: '/', component: HomeView, meta: { requiresAuth: true }, name: 'Home' },
   {
-    path: '/workflow-details',
+    path: '/workflow-details/:workflowId',
     component: () => import('@/views/WorkflowDetails.vue'),
     meta: { requiresAuth: true },
     name: 'WorkflowDetails',
-    props: (route) => ({ prompt: route.query.prompt }), // Pass text as a prop from query parameter
+    props: (route) => ({ workflowId: route.params.workflowId }), // Pass text as a prop from query parameter
   },
   { path: '/:pathMatch(.*)*', redirect: '/' }, // Redirect to home for any unmatched routes
 ]

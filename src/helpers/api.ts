@@ -1,16 +1,31 @@
 import axios, { type InternalAxiosRequestConfig } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 
-const api = axios.create({
-  baseURL: '/api',
+export const api = axios.create({
+  baseURL: 'http://localhost:8000/api/v1',
 })
 
-api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+// Request interceptor
+api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   const auth = useAuthStore()
-  if (auth.token) {
-    config.headers.Authorization = `Bearer ${auth.token}`
+  const token = await auth.getValidToken()
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
   }
+
   return config
 })
 
-export default api
+// Response interceptor for 401 errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      const auth = useAuthStore()
+      auth.logout()
+      // Redirect to login page or show login modal
+    }
+    return Promise.reject(error)
+  },
+)

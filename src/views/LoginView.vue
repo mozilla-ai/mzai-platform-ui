@@ -23,7 +23,7 @@ const handleLogin = async () => {
     const redirectPath = (route.query.redirect as string) || '/'
     router.push(redirectPath)
   } catch (err) {
-    alert('Login failed', err)
+    alert('Login failed')
   }
 }
 </script>

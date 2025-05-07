@@ -57,10 +57,11 @@ import { computed } from 'vue'
 import { useVueFlow, VueFlow } from '@vue-flow/core'
 import { MiniMap } from '@vue-flow/additional-components'
 import pipelineData from '../helpers/sample-response.json'
+import { api } from '@/helpers/api'
 
 // Define props
-defineProps<{
-  prompt: string
+const props = defineProps<{
+  workflowId: string
 }>()
 
 // Destructure fitView and onFlowInit from useVueFlow
@@ -73,6 +74,22 @@ const handleSubmit = (event: Event) => {
   const formData = new FormData(event.target as HTMLFormElement)
   const parameters = Object.fromEntries(formData.entries())
   console.log('Submitted parameters:', parameters)
+
+  api
+    .post(`/workflows/${props.workflowId}/run/`, parameters)
+    .then((response) => {
+      console.log('Parameters submitted successfully:', response.data)
+      alert('Parameters submitted successfully!')
+    })
+    .catch((error) => {
+      console.error('Error submitting parameters:', error)
+      alert(error.response.data ? JSON.stringify(error.response.data) : error.message)
+    })
+
+  // Here you can send the parameters to your API or perform any other action
+  // For example:
+  // await api.submitParameters(parameters)
+  // alert('Parameters submitted successfully!')
 }
 
 const parameters = computed(() => {
