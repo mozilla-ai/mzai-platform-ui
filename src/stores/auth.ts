@@ -56,7 +56,7 @@ export const useAuthStore = defineStore('auth', {
      * Log in user with email and password
      */
     async login(credentials: Credentials): Promise<void> {
-      const response = await fetch(`${API_BASE_URL}/api/token/`, {
+      const response = await fetch(`${API_BASE_URL}/token/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(credentials),
@@ -127,7 +127,7 @@ export const useAuthStore = defineStore('auth', {
         throw new Error('No refresh token available')
       }
 
-      const response = await fetch(`${API_BASE_URL}/api/token/refresh/`, {
+      const response = await fetch(`${API_BASE_URL}/token/refresh/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refresh: this.refreshToken }),
