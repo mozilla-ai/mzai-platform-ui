@@ -1,17 +1,21 @@
 <template>
   <div class="details-container">
-    <form class="parameters-contianer" @submit="handleSubmit">
+    <form class="parameters-contianer" @submit="handleSubmit" name="workflow-form">
       <div v-for="(parameter, index) in parameters" :key="index" class="parameter-field">
-        <label class="label" :for="parameter.name">{{ parameter.name }}</label>
+        <label class="label" :for="parameter.name" :aria-required="parameter.required"
+          >{{ parameter.name }}
+          <span aria-label="required" v-if="parameter.required">*</span>
+        </label>
         <input
           v-if="parameter.type === 'string'"
           class="input"
           type="text"
           :id="parameter.name"
           :name="parameter.name"
-          v-model="parameter.default_value"
+          :value="parameter.default_value"
           :required="parameter.required"
           :placeholder="parameter.description"
+          :autocomplete="parameter.name"
         />
       </div>
       <button type="submit">Submit</button>
@@ -83,7 +87,7 @@ const handleSubmit = (event: Event) => {
     })
     .catch((error) => {
       console.error('Error submitting parameters:', error)
-      alert(error.response.data ? JSON.stringify(error.response.data) : error.message)
+      alert(error.response?.data ? JSON.stringify(error.response.data) : error.message)
     })
 
   // Here you can send the parameters to your API or perform any other action
@@ -169,6 +173,11 @@ const onFlowInit = () => {
   border-radius: 4px;
   width: 100%;
 }
+
+input:invalid:focus {
+  border: solid 2px red;
+}
+
 .input:focus {
   border-color: #007bff;
   outline: none;

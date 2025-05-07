@@ -36,7 +36,7 @@ const compose = () => {
     })
     .catch((error) => {
       console.error('Error fetching workflow:', error)
-      alert(error.response.data ? JSON.stringify(error.response.data) : error.message)
+      alert(error.response?.data ? JSON.stringify(error.response.data) : error.message)
     })
     .finally(() => {
       router.push({

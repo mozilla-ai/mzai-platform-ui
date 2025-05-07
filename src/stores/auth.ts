@@ -151,7 +151,9 @@ export const useAuthStore = defineStore('auth', {
     async getValidToken(): Promise<string> {
       // No token or refresh token available
       if (!this.token || !this.refreshToken) {
-        throw new Error('No authentication tokens available')
+        // throw new Error('No authentication tokens available')
+        this.logout()
+        return ''
       }
 
       // Token expired completely - need to refresh
