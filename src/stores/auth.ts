@@ -30,7 +30,7 @@ export const useAuthStore = defineStore('auth', {
       })
 
       if (!res.ok) throw new Error('Login failed')
-      const { access, refresh } = await res.json()
+      const { access } = await res.json()
       this.token = access
       localStorage.setItem('token', access)
 
