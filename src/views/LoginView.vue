@@ -22,7 +22,7 @@ const handleLogin = async () => {
     await authStore.login({ email: email.value, password: password.value })
     const redirectPath = (route.query.redirect as string) || '/'
     router.push(redirectPath)
-  } catch (err) {
+  } catch {
     alert('Login failed')
   }
 }

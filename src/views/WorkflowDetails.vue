@@ -63,7 +63,6 @@ import { useVueFlow, VueFlow } from '@vue-flow/core'
 import pipelineData from '../helpers/sample-response.json'
 import { api } from '@/helpers/api'
 
-
 type StepInput = {
   name: string
   type: string

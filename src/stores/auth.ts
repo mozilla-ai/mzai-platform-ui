@@ -1,4 +1,5 @@
 // stores/auth.ts
+import router from '@/router'
 import { jwtDecode } from 'jwt-decode'
 import { defineStore } from 'pinia'
 
@@ -80,6 +81,7 @@ export const useAuthStore = defineStore('auth', {
       this.user = undefined
       localStorage.removeItem(STORAGE_KEYS.TOKEN)
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN)
+      router.push({ name: 'Login' }) // Redirect to login page
     },
 
     /**

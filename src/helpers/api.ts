@@ -8,13 +8,18 @@ export const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
   const auth = useAuthStore()
-  const token = await auth.getValidToken()
+  try {
+    const token = await auth.getValidToken()
 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+
+    return config
+  } catch {
+    auth.logout()
+    return config
   }
-
-  return config
 })
 
 // Response interceptor for 401 errors

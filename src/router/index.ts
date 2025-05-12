@@ -3,7 +3,12 @@ import { useAuthStore } from '@/stores/auth'
 
 const routes: Array<RouteRecordRaw> = [
   { path: '/login', component: () => import('@/views/LoginView.vue'), name: 'Login' },
-  { path: '/', component: () => import('@/views/HomeView.vue'), meta: { requiresAuth: true }, name: 'Home' },
+  {
+    path: '/',
+    component: () => import('@/views/HomeView.vue'),
+    meta: { requiresAuth: true },
+    name: 'Home',
+  },
   {
     path: '/workflow-details/:workflowId',
     component: () => import('@/views/WorkflowDetails.vue'),
