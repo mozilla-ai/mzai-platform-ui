@@ -4,7 +4,7 @@
       <div v-for="(parameter, index) in parameters" :key="index" class="parameter-field">
         <label class="label" :for="parameter.name" :aria-required="parameter.required"
           >{{ parameter.name }}
-          <span aria-label="required" v-if="parameter.required">*</span>
+          <span aria-label="required" v-if="parameter.required">* (required)</span>
         </label>
         <input
           v-if="parameter.type === 'string'"

@@ -25,4 +25,5 @@ Thumbs.db
 # output
 
 dist
+dev-dist
 \*.log
