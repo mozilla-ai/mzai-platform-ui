@@ -1,0 +1,25 @@
+# node stuff
+
+node_modules
+.pnpm-store
+
+# local config
+
+.env
+.env.\*local
+
+# system junk
+
+.DS_Store
+Thumbs.db
+
+# git and editor
+
+.git
+.vscode
+.idea
+
+# output
+
+dist
+\*.log
