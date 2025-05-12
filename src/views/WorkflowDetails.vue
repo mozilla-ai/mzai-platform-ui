@@ -50,7 +50,7 @@
         <Icon name="log" />
       </ControlButton>
     </Controls> -->
-        <MiniMap />
+        <!-- <MiniMap /> -->
       </VueFlow>
     </div>
   </div>
@@ -59,10 +59,18 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useVueFlow, VueFlow } from '@vue-flow/core'
-import { MiniMap } from '@vue-flow/additional-components'
+// import { MiniMap } from '@vue-flow/additional-components'
 import pipelineData from '../helpers/sample-response.json'
 import { api } from '@/helpers/api'
 
+
+type StepInput = {
+  name: string
+  type: string
+  required?: boolean
+  default_value?: string
+  description?: string
+}
 // Define props
 const props = defineProps<{
   workflowId: string
@@ -98,7 +106,7 @@ const handleSubmit = (event: Event) => {
 
 const parameters = computed(() => {
   return nodes.value.flatMap((node) => {
-    return node.data.inputs
+    return node.data.inputs as StepInput[]
   })
 })
 

@@ -62,3 +62,11 @@ pnpm test:e2e --debug
 ```sh
 pnpm lint
 ```
+
+### Environment variables
+
+Copy the example env file which includes the backend api url and adjust any other environment variables as needed
+
+```sh
+cp .env.example .env
+```

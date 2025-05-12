@@ -1,11 +1,9 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import HomeView from '@/views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
 
 const routes: Array<RouteRecordRaw> = [
-  { path: '/login', component: () => LoginView, name: 'Login' },
-  { path: '/', component: HomeView, meta: { requiresAuth: true }, name: 'Home' },
+  { path: '/login', component: () => import('@/views/LoginView.vue'), name: 'Login' },
+  { path: '/', component: () => import('@/views/HomeView.vue'), meta: { requiresAuth: true }, name: 'Home' },
   {
     path: '/workflow-details/:workflowId',
     component: () => import('@/views/WorkflowDetails.vue'),
