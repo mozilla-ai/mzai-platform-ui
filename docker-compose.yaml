@@ -1,9 +1,9 @@
 services:
   mzai-platform-ui:
-    image: node:lts-alpine
+    image: node:alpine
     container_name: mzai-platform-ui-dev
     working_dir: /mzai-platform-ui
-    command: sh -c "npm install -g pnpm && pnpm install && pnpm dev"
+    command: sh -c "corepack enable && pnpm install && pnpm dev"
     volumes:
       - .:/mzai-platform-ui
       - /mzai-platform-ui/node_modules
@@ -21,5 +21,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
+    environment:
+      - NODE_ENV=production
     profiles:
       - prod

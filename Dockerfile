@@ -1,11 +1,12 @@
 # Stage 0: Base image with dependencies
-FROM node:lts-alpine AS deps
+FROM node:alpine AS deps
 
 RUN corepack enable
 
 WORKDIR /mzai-platform-ui
 
 COPY package.json pnpm-lock.yaml ./
+# prefetfch and install dependencies
 RUN pnpm fetch
 
 # Stage 1: Build the app
@@ -16,15 +17,17 @@ RUN corepack enable
 WORKDIR /mzai-platform-ui
 
 COPY package.json pnpm-lock.yaml ./
+# copy the prefetched pnpm store from the deps stage
 COPY --from=deps /root/.local/share/pnpm/store /root/.local/share/pnpm/store
 
-RUN pnpm install --offline
+# use the prefetched pnpm store to install dependencies
+RUN pnpm install --offline --frozen-lockfile
 
 COPY . .
 RUN pnpm build
 
 # Stage 2: Production image
-FROM nginx:1.25-alpine AS runner
+FROM nginx:alpine AS runner
 
 # Remove default nginx site
 RUN rm -rf /usr/share/nginx/html/*
