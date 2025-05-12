@@ -2,7 +2,7 @@ import axios, { type InternalAxiosRequestConfig } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_APP_API_BASE_URL,
 })
 
 // Request interceptor
