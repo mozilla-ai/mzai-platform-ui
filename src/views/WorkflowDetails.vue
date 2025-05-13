@@ -1,54 +1,83 @@
 <template>
-  <div class="details-container">
-    <form class="parameters-container" @submit="handleSubmit" name="workflow-form">
-      <div v-for="parameter in parameters" :key="parameter.key" class="parameter-field">
-        <label class="label" :for="parameter.key" :aria-required="parameter.required"
-          >{{ parameter.key }}
-          <span aria-label="required" v-if="parameter.required">* (required)</span>
-        </label>
-        <input
-          v-if="parameter.type === 'string'"
-          class="input"
-          type="text"
-          :id="parameter.name"
-          :name="parameter.key"
-          :value="parameter.default_value"
-          :required="parameter.required"
-          :placeholder="parameter.description"
-          :autocomplete="parameter.name"
-        />
+  <div class="container">
+    <div class="details-container">
+      <form class="parameters-container" @submit="handleSubmit" name="workflow-form">
+        <div v-for="parameter in parameters" :key="parameter.key" class="parameter-field">
+          <label class="label" :for="parameter.key" :aria-required="parameter.required"
+            >{{ parameter.key }}
+            <span aria-label="required" v-if="parameter.required">* (required)</span>
+          </label>
+          <input
+            v-if="parameter.type === 'string'"
+            class="input"
+            type="text"
+            :id="parameter.name"
+            :name="parameter.key"
+            :value="parameter.default_value"
+            :required="parameter.required"
+            :placeholder="parameter.description"
+            :autocomplete="parameter.name"
+          />
+        </div>
+        <button type="submit" :disabled="mutation.isPending.value">
+          {{ mutation.isPending.value ? 'Submitting...' : 'Submit' }}
+        </button>
+      </form>
+      <div class="flow-container">
+        <VueFlow
+          v-if="nodes.length && edges.length"
+          :nodes="nodes"
+          :edges="edges"
+          :default-viewport="{ zoom: 1.5 }"
+          :min-zoom="0.2"
+          :max-zoom="4"
+          fit-view
+          @init="onFlowInit"
+        >
+          <!-- <Background /> -->
+          <!-- <Controls /> -->
+          <!-- <MiniMap /> -->
+        </VueFlow>
+        <div v-else-if="workflowQuery.isLoading && !workflowQuery.data" class="loading">
+          Loading workflow data...
+        </div>
+        <div v-else-if="workflowQuery.isError && !workflowQuery.data" class="error">
+          Error loading workflow: {{ workflowQuery.error.value?.message || 'Unknown error' }}
+        </div>
       </div>
-      <button type="submit" :disabled="mutation.isPending.value">
-        {{ mutation.isPending.value ? 'Submitting...' : 'Submit' }}
-      </button>
-    </form>
-    <div class="flow-container">
-      <VueFlow
-        v-if="nodes.length && edges.length"
-        :nodes="nodes"
-        :edges="edges"
-        :default-viewport="{ zoom: 1.5 }"
-        :min-zoom="0.2"
-        :max-zoom="4"
-        fit-view
-        @init="onFlowInit"
-      >
-        <!-- <Background /> -->
-        <!-- <Controls /> -->
-        <!-- <MiniMap /> -->
-      </VueFlow>
-      <div v-else-if="workflowQuery.isLoading && !workflowQuery.data" class="loading">
-        Loading workflow data...
+    </div>
+    <div class="results">
+      <h2>Results</h2>
+      <div class="mutation-results">
+        <div v-if="mutation.isSuccess.value" class="results-content">
+          <pre>{{ mutation.data.value }}</pre>
+        </div>
+        <div v-else-if="mutation.isError.value" class="error">
+          Error: {{ mutation.error.value?.message || 'Unknown error' }}
+        </div>
+        <div v-else class="no-results">No results yet. Submit the form to see results.</div>
       </div>
-      <div v-else-if="workflowQuery.isError && !workflowQuery.data" class="error">
-        Error loading workflow: {{ workflowQuery.error.value?.message || 'Unknown error' }}
+      <div class="run-data">
+        <span v-if="runQuery.isFetching.value">Loading run data...</span>
+        <span v-else-if="runQuery.isError.value"
+          >Error loading run data: {{ runQuery.error.value?.message }}</span
+        >
+        <pre v-else-if="runQuery.data.value">{{ runQuery.data.value }}</pre>
+        <audio
+          :src="runQuery.data.value.url"
+          v-if="runQuery.data.value.status === 'Succeeded'"
+          controls
+          preload="metadata"
+        >
+          Your browser does not support the audio element.
+        </audio>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useVueFlow, VueFlow } from '@vue-flow/core'
 // import { MiniMap } from '@vue-flow/additional-components'
 import { useQuery, useMutation } from '@tanstack/vue-query'
@@ -83,6 +112,8 @@ const props = defineProps<{
   workflowId: string
 }>()
 
+const runId = ref()
+
 // Destructure fitView and onFlowInit from useVueFlow
 const { fitView } = useVueFlow()
 const workflowStore = useWorkflowsStore()
@@ -91,7 +122,7 @@ const workflowQuery = useQuery({
   initialData: sampleResponse, // Use sample data while loading or on error
   queryKey: ['workflow', props.workflowId],
   queryFn: async () => {
-    return workflowStore.workflows[props.workflowId]
+    return workflowStore.workflows[props.workflowId] || sampleResponse
     // try {
     //   const response = await api.get<WorkflowResponse>(`/workflows/${props.workflowId}/`)
     //   return response.data
@@ -113,13 +144,37 @@ const mutation = useMutation({
     const response = await api.post(`/workflows/${props.workflowId}/run/`, formData)
     return response.data
   },
-  onSuccess: () => {
-    // alert('Parameters submitted successfully!')
+  onSuccess: (data) => {
+    alert('Workflow run submitted successfully!')
+    runId.value = data.id
   },
   onError: (error: AxiosError) => {
     const errorMessage = error.response?.data ? JSON.stringify(error.response.data) : error.message
     alert(`Error: ${errorMessage}`)
   },
+})
+const runQuery = useQuery({
+  queryKey: computed(() => ['run', runId.value]), // This is reactive
+  queryFn: async () => {
+    if (!runId.value) throw new Error('runId is not set') // safety check
+
+    const response = await api.get(`/workflows/${props.workflowId}/runs/${runId.value}`)
+    /*
+       {
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "workflow_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "kfp_run_id": "string",
+  "status": "PENDING",
+  "started_at": "2025-05-13T13:07:23.575Z",
+  "finished_at": "2025-05-13T13:07:23.575Z",
+  "yaml_snapshot_s3_key": "string"
+}
+  */
+    return response.data
+  },
+  refetchInterval: 3000, // Refetch every 3 seconds
+  retry: false,
+  enabled: computed(() => Boolean(runId.value)),
 })
 
 const handleSubmit = (event: Event) => {
@@ -198,10 +253,15 @@ const onFlowInit = () => {
 </style>
 
 <style scoped>
-.details-container {
-  display: flex;
+.container {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.details-container {
+  display: flex;
 }
 .parameters-container {
   width: 100%;
