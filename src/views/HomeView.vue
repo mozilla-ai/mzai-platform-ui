@@ -38,14 +38,6 @@ const compose = () => {
       console.error('Error fetching workflow:', error)
       alert(error.response?.data ? JSON.stringify(error.response.data) : error.message)
     })
-    .finally(() => {
-      router.push({
-        name: 'WorkflowDetails',
-        params: {
-          workflowId: 1,
-        },
-      })
-    })
 }
 </script>
 <style scoped>

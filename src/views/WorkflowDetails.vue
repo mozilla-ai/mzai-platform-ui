@@ -1,9 +1,9 @@
 <template>
   <div class="details-container">
     <form class="parameters-contianer" @submit="handleSubmit" name="workflow-form">
-      <div v-for="(parameter, index) in parameters" :key="index" class="parameter-field">
-        <label class="label" :for="parameter.name" :aria-required="parameter.required"
-          >{{ parameter.name }}
+      <div v-for="parameter in parameters" :key="parameter.key" class="parameter-field">
+        <label class="label" :for="parameter.key" :aria-required="parameter.required"
+          >{{ parameter.key }}
           <span aria-label="required" v-if="parameter.required">* (required)</span>
         </label>
         <input
@@ -11,7 +11,7 @@
           class="input"
           type="text"
           :id="parameter.name"
-          :name="parameter.name"
+          :name="parameter.key"
           :value="parameter.default_value"
           :required="parameter.required"
           :placeholder="parameter.description"
@@ -57,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
 import { useVueFlow, VueFlow } from '@vue-flow/core'
 // import { MiniMap } from '@vue-flow/additional-components'
 import pipelineData from '../helpers/sample-response.json'
@@ -70,6 +70,14 @@ type StepInput = {
   default_value?: string
   description?: string
 }
+
+type Step = {
+  id: string
+  description: string
+  inputs: StepInput[]
+  image: string
+}
+
 // Define props
 const props = defineProps<{
   workflowId: string
@@ -78,7 +86,24 @@ const props = defineProps<{
 // Destructure fitView and onFlowInit from useVueFlow
 const { fitView } = useVueFlow()
 
-const steps = pipelineData.steps
+// const steps = pipelineData.steps
+
+const steps: Ref<Step[]> = ref(pipelineData.steps)
+
+onMounted(() => {
+  // Fetch workflow data from the API
+  api
+    .get(`/workflows/${props.workflowId}/`)
+    .then((response) => {
+      console.log('Workflow data:', response.data)
+      // Update the steps with the fetched data
+      steps.value = response.data.steps
+    })
+    .catch((error) => {
+      console.error('Error fetching workflow data:', error)
+      alert(error.response?.data ? JSON.stringify(error.response.data) : error.message)
+    })
+})
 
 const handleSubmit = (event: Event) => {
   event.preventDefault()
@@ -104,14 +129,18 @@ const handleSubmit = (event: Event) => {
 }
 
 const parameters = computed(() => {
-  return nodes.value.flatMap((node) => {
-    return node.data.inputs as StepInput[]
+  return steps.value.flatMap((step: Step) => {
+    return step.inputs.map((input: StepInput) => ({
+      ...input,
+      step: step.id,
+      key: `${step.id}-${input.name}`,
+    }))
   })
 })
 
 // Computed nodes and edges
 const nodes = computed(() => {
-  return steps.map((step, index) => ({
+  return steps.value.map((step: Step, index: number) => ({
     id: step.id,
     type: 'default',
     position: { x: 100, y: index * 150 },
@@ -124,11 +153,11 @@ const nodes = computed(() => {
 
 const edges = computed(() => {
   const connections = []
-  for (let i = 0; i < steps.length - 1; i++) {
+  for (let i = 0; i < steps.value.length - 1; i++) {
     connections.push({
-      id: `e-${steps[i].id}-${steps[i + 1].id}`,
-      source: steps[i].id,
-      target: steps[i + 1].id,
+      id: `e-${steps.value[i].id}-${steps.value[i + 1].id}`,
+      source: steps.value[i].id,
+      target: steps.value[i + 1].id,
     })
   }
   return connections
