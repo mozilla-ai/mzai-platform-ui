@@ -64,8 +64,8 @@
         >
         <pre v-else-if="runQuery.data.value">{{ runQuery.data.value }}</pre>
         <audio
-          :src="runQuery.data.value.url"
-          v-if="runQuery.data.value.status === 'Succeeded'"
+          :src="runQuery.data.value?.url"
+          v-if="runQuery.data.value?.status === 'Succeeded'"
           controls
           preload="metadata"
         >
