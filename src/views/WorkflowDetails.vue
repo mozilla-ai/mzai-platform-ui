@@ -1,6 +1,6 @@
 <template>
   <div class="details-container">
-    <form class="parameters-container" @submit.prevent="handleSubmit" name="workflow-form">
+    <form class="parameters-container" @submit="handleSubmit" name="workflow-form">
       <div v-for="parameter in parameters" :key="parameter.key" class="parameter-field">
         <label class="label" :for="parameter.key" :aria-required="parameter.required"
           >{{ parameter.key }}
