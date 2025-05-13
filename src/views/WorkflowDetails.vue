@@ -158,7 +158,7 @@ const runQuery = useQuery({
   queryFn: async () => {
     if (!runId.value) throw new Error('runId is not set') // safety check
 
-    const response = await api.get(`/workflows/${props.workflowId}/runs/${runId.value}`)
+    const response = await api.get(`/workflows/${props.workflowId}/runs/${runId.value}/`)
     /*
        {
   "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
