@@ -1,6 +1,6 @@
 <template>
   <div class="details-container">
-    <form class="parameters-contianer" @submit="handleSubmit" name="workflow-form">
+    <form class="parameters-container" @submit.prevent="handleSubmit" name="workflow-form">
       <div v-for="parameter in parameters" :key="parameter.key" class="parameter-field">
         <label class="label" :for="parameter.key" :aria-required="parameter.required"
           >{{ parameter.key }}
@@ -18,10 +18,13 @@
           :autocomplete="parameter.name"
         />
       </div>
-      <button type="submit">Submit</button>
+      <button type="submit" :disabled="mutation.isPending.value">
+        {{ mutation.isPending.value ? 'Submitting...' : 'Submit' }}
+      </button>
     </form>
     <div class="flow-container">
       <VueFlow
+        v-if="nodes.length && edges.length"
         :nodes="nodes"
         :edges="edges"
         :default-viewport="{ zoom: 1.5 }"
@@ -29,39 +32,29 @@
         :max-zoom="4"
         fit-view
         @init="onFlowInit"
-        v-if="nodes.length && edges.length"
       >
         <!-- <Background /> -->
-        <!-- <Controls position="top-left">
-      <ControlButton title="Reset Transform" @click="resetTransform">
-        <Icon name="reset" />
-      </ControlButton>
-
-      <ControlButton title="Shuffle Node Positions" @click="updatePos">
-        <Icon name="update" />
-      </ControlButton>
-
-      <ControlButton title="Toggle Dark Mode" @click="toggleDarkMode">
-        <Icon v-if="dark" name="sun" />
-        <Icon v-else name="moon" />
-      </ControlButton>
-
-      <ControlButton title="Log `toObject`" @click="logToObject">
-        <Icon name="log" />
-      </ControlButton>
-    </Controls> -->
+        <!-- <Controls /> -->
         <!-- <MiniMap /> -->
       </VueFlow>
+      <div v-else-if="workflowQuery.isLoading && !workflowQuery.data" class="loading">
+        Loading workflow data...
+      </div>
+      <div v-else-if="workflowQuery.isError && !workflowQuery.data" class="error">
+        Error loading workflow: {{ workflowQuery.error.value?.message || 'Unknown error' }}
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, type Ref } from 'vue'
+import { computed } from 'vue'
 import { useVueFlow, VueFlow } from '@vue-flow/core'
 // import { MiniMap } from '@vue-flow/additional-components'
-import pipelineData from '../helpers/sample-response.json'
+import { useQuery, useMutation } from '@tanstack/vue-query'
 import { api } from '@/helpers/api'
+import type { AxiosError } from 'axios'
+import sampleResponse from '@/helpers/sample-response.json'
 
 type StepInput = {
   name: string
@@ -78,6 +71,12 @@ type Step = {
   image: string
 }
 
+type WorkflowResponse = {
+  id: string
+  description: string
+  steps: Step[]
+}
+
 // Define props
 const props = defineProps<{
   workflowId: string
@@ -86,50 +85,65 @@ const props = defineProps<{
 // Destructure fitView and onFlowInit from useVueFlow
 const { fitView } = useVueFlow()
 
-// const steps = pipelineData.steps
+// Fetch workflow data with useQuery
+const workflowQuery = useQuery({
+  initialData: sampleResponse, // Use sample data while loading or on error
+  queryKey: ['workflow', props.workflowId],
+  queryFn: async () => {
+    try {
+      const response = await api.get<WorkflowResponse>(`/workflows/${props.workflowId}/`)
+      return response.data
+    } catch (error: unknown) {
+      // Show alert when an error occurs
+      const err = error as AxiosError
+      const errorMessage = err.response?.data ? JSON.stringify(err.response.data) : err.message
+      alert(`Error fetching workflow data: ${errorMessage}`)
+      throw error // Re-throw to let useQuery know there was an error
+    }
+  },
+  retry: false,
+  refetchOnWindowFocus: false,
+})
 
-const steps: Ref<Step[]> = ref(pipelineData.steps)
-
-onMounted(() => {
-  // Fetch workflow data from the API
-  api
-    .get(`/workflows/${props.workflowId}/`)
-    .then((response) => {
-      console.log('Workflow data:', response.data)
-      // Update the steps with the fetched data
-      steps.value = response.data.steps
-    })
-    .catch((error) => {
-      console.error('Error fetching workflow data:', error)
-      alert(error.response?.data ? JSON.stringify(error.response.data) : error.message)
-    })
+// Form submission mutation
+const mutation = useMutation({
+  mutationFn: async (formData: Record<string, string | File>) => {
+    const response = await api.post(`/workflows/${props.workflowId}/run/`, formData)
+    return response.data
+  },
+  onSuccess: () => {
+    // alert('Parameters submitted successfully!')
+  },
+  onError: (error: AxiosError) => {
+    const errorMessage = error.response?.data ? JSON.stringify(error.response.data) : error.message
+    alert(`Error: ${errorMessage}`)
+  },
 })
 
 const handleSubmit = (event: Event) => {
   event.preventDefault()
   const formData = new FormData(event.target as HTMLFormElement)
-  const parameters = Object.fromEntries(formData.entries())
+  const parameters: Record<string, string | File> = Object.fromEntries(formData.entries())
+
+  // Convert FormData to Record<string, string>
+  // formData.forEach((value, key) => {
+  //   // Handle only string values, ignore files
+  //   if (typeof value === 'string') {
+  //     parameters[key] = value
+  //   }
+  // })
+
   console.log('Submitted parameters:', parameters)
 
-  api
-    .post(`/workflows/${props.workflowId}/run/`, parameters)
-    .then((response) => {
-      console.log('Parameters submitted successfully:', response.data)
-      alert('Parameters submitted successfully!')
-    })
-    .catch((error) => {
-      console.error('Error submitting parameters:', error)
-      alert(error.response?.data ? JSON.stringify(error.response.data) : error.message)
-    })
-
-  // Here you can send the parameters to your API or perform any other action
-  // For example:
-  // await api.submitParameters(parameters)
-  // alert('Parameters submitted successfully!')
+  // Use the mutation to submit the form
+  mutation.mutate(parameters)
 }
 
+// Calculate parameters based on workflow data
 const parameters = computed(() => {
-  return steps.value.flatMap((step: Step) => {
+  const steps = workflowQuery.data.value?.steps || []
+
+  return steps.flatMap((step: Step) => {
     return step.inputs.map((input: StepInput) => ({
       ...input,
       step: step.id,
@@ -140,7 +154,9 @@ const parameters = computed(() => {
 
 // Computed nodes and edges
 const nodes = computed(() => {
-  return steps.value.map((step: Step, index: number) => ({
+  const steps = workflowQuery.data.value?.steps || []
+
+  return steps.map((step: Step, index: number) => ({
     id: step.id,
     type: 'default',
     position: { x: 100, y: index * 150 },
@@ -152,12 +168,14 @@ const nodes = computed(() => {
 })
 
 const edges = computed(() => {
+  const steps = workflowQuery.data.value?.steps || []
   const connections = []
-  for (let i = 0; i < steps.value.length - 1; i++) {
+
+  for (let i = 0; i < steps.length - 1; i++) {
     connections.push({
-      id: `e-${steps.value[i].id}-${steps.value[i + 1].id}`,
-      source: steps.value[i].id,
-      target: steps.value[i + 1].id,
+      id: `e-${steps[i].id}-${steps[i + 1].id}`,
+      source: steps[i].id,
+      target: steps[i + 1].id,
     })
   }
   return connections
@@ -183,7 +201,7 @@ const onFlowInit = () => {
   width: 100%;
   height: 100%;
 }
-.parameters-contianer {
+.parameters-container {
   width: 100%;
   height: 100%;
   display: flex;
@@ -243,5 +261,20 @@ button:disabled {
   height: 100%;
   /* flex: 2; */
   /* background-color: #f5f5f5; */
+}
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.error {
+  color: #d32f2f;
 }
 </style>
