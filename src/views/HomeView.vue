@@ -9,7 +9,7 @@
       class="text-area"
     ></textarea>
     <div class="button-container">
-      <button @click="compose">Compose</button>
+      <button @click="compose" :disabled="mutation.isPending.value">Compose</button>
     </div>
   </div>
 </template>
@@ -18,26 +18,32 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '@/helpers/api'
+import { useMutation } from '@tanstack/vue-query'
+import type { AxiosError } from 'axios'
 
 const router = useRouter()
 const prompt = ref('generate a kubeflow pipeline that converts document to podcast')
+const mutation = useMutation({
+  mutationFn: (data: { name: string; prompt: string }) =>
+    api.post('/workflows/generate/', data),
+  onSuccess: (response) => {
+    const workflowId = response.data.workflowId
+    router.push({ name: 'WorkflowDetails', params: { workflowId } })
+  },
+  onError: (error: AxiosError) => {
+    console.error('Error fetching workflow:', error)
+    alert(error.response?.data ? JSON.stringify(error.response.data) : error.message)
+  },
+})
+
 const compose = () => {
   if (!prompt.value) {
     alert('Please enter a prompt')
     return
   }
   // Call the API to get the workflow
-  api
-    .post('/workflows/generate/', { name: 'test', prompt: prompt.value })
-    .then((response) => {
-      // Handle the response and navigate to the workflow details page
-      const workflowId = response.data.workflowId
-      router.push({ name: 'WorkflowDetails', params: { workflowId } })
-    })
-    .catch((error) => {
-      console.error('Error fetching workflow:', error)
-      alert(error.response?.data ? JSON.stringify(error.response.data) : error.message)
-    })
+  mutation.mutate({ name: 'test', prompt: prompt.value })
+
 }
 </script>
 <style scoped>
@@ -52,6 +58,7 @@ const compose = () => {
   display: flex;
   justify-content: center;
 }
+
 .button-container button {
   padding: 10px 20px;
   background-color: #007bff;
@@ -60,7 +67,13 @@ const compose = () => {
   border-radius: 4px;
   cursor: pointer;
 }
+
 .button-container button:hover {
   background-color: #0056b3;
+}
+
+.button-container button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 </style>
