@@ -55,6 +55,7 @@ import { useQuery, useMutation } from '@tanstack/vue-query'
 import { api } from '@/helpers/api'
 import type { AxiosError } from 'axios'
 import sampleResponse from '@/helpers/sample-response.json'
+import { useWorkflowsStore } from '@/stores/workflows'
 
 type StepInput = {
   name: string
@@ -71,11 +72,11 @@ type Step = {
   image: string
 }
 
-type WorkflowResponse = {
-  id: string
-  description: string
-  steps: Step[]
-}
+// type WorkflowResponse = {
+//   id: string
+//   description: string
+//   steps: Step[]
+// }
 
 // Define props
 const props = defineProps<{
@@ -84,22 +85,23 @@ const props = defineProps<{
 
 // Destructure fitView and onFlowInit from useVueFlow
 const { fitView } = useVueFlow()
-
+const workflowStore = useWorkflowsStore()
 // Fetch workflow data with useQuery
 const workflowQuery = useQuery({
   initialData: sampleResponse, // Use sample data while loading or on error
   queryKey: ['workflow', props.workflowId],
   queryFn: async () => {
-    try {
-      const response = await api.get<WorkflowResponse>(`/workflows/${props.workflowId}/`)
-      return response.data
-    } catch (error: unknown) {
-      // Show alert when an error occurs
-      const err = error as AxiosError
-      const errorMessage = err.response?.data ? JSON.stringify(err.response.data) : err.message
-      alert(`Error fetching workflow data: ${errorMessage}`)
-      throw error // Re-throw to let useQuery know there was an error
-    }
+    return workflowStore.workflows[props.workflowId]
+    // try {
+    //   const response = await api.get<WorkflowResponse>(`/workflows/${props.workflowId}/`)
+    //   return response.data
+    // } catch (error: unknown) {
+    //   // Show alert when an error occurs
+    //   const err = error as AxiosError
+    //   const errorMessage = err.response?.data ? JSON.stringify(err.response.data) : err.message
+    //   alert(`Error fetching workflow data: ${errorMessage}`)
+    //   throw error // Re-throw to let useQuery know there was an error
+    // }
   },
   retry: false,
   refetchOnWindowFocus: false,

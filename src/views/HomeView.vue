@@ -20,13 +20,17 @@ import { useRouter } from 'vue-router'
 import { api } from '@/helpers/api'
 import { useMutation } from '@tanstack/vue-query'
 import type { AxiosError } from 'axios'
+import { useWorkflowsStore } from '@/stores/workflows'
 
 const router = useRouter()
+const workflowStore = useWorkflowsStore()
+
 const prompt = ref('generate a kubeflow pipeline that converts document to podcast')
 const mutation = useMutation({
   mutationFn: (data: { name: string; prompt: string }) => api.post('/workflows/generate/', data),
   onSuccess: (response) => {
     const workflowId = response.data.workflowId
+    workflowStore.addWorkflow(workflowId, response.data)
     router.push({ name: 'WorkflowDetails', params: { workflowId } })
   },
   onError: (error: AxiosError) => {

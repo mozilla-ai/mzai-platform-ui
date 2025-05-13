@@ -1,5 +1,5 @@
 {
-  "id": "4d8184b9-9ba0-4243-99b3-b6f8c8e178ad",
+  "workflowId": "4d8184b9-9ba0-4243-99b3-b6f8c8e178ad",
   "description": "A pipeline that converts a document into a podcast.",
   "steps": [
     {
