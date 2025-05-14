@@ -49,21 +49,20 @@
     <div class="results">
       <h2>Results</h2>
       <div class="mutation-results">
-        <div v-if="mutation.isSuccess.value" class="results-content">
-          <pre>{{ mutation.data.value }}</pre>
+        <div class="no-results" v-if="!runQuery.data.value">
+          No results yet. Submit the form to see results.
         </div>
-        <div v-else-if="mutation.isError.value" class="error">
-          Error: {{ mutation.error.value?.message || 'Unknown error' }}
-        </div>
-        <div v-else class="no-results">No results yet. Submit the form to see results.</div>
       </div>
       <div class="run-data">
         <span v-if="runQuery.isFetching.value">Loading run data...</span>
         <span v-else-if="runQuery.isError.value"
           >Error loading run data: {{ runQuery.error.value?.message }}</span
         >
-        <pre v-else-if="runQuery.data.value">{{ runQuery.data.value }}</pre>
+        <pre :key="runQuery.data.value?.id" v-else-if="runQuery.data.value">{{
+          runQuery.data.value
+        }}</pre>
         <audio
+          :key="runQuery.data.value?.url"
           :src="runQuery.data.value?.url"
           v-if="runQuery.data.value?.status === 'Succeeded'"
           controls
