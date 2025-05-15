@@ -176,7 +176,7 @@ const runQuery = useQuery({
   */
     return response.data
   },
-  refetchInterval: 3000, // Refetch every 3 seconds
+  refetchInterval: 5000, // Refetch every 5 seconds
   retry: false,
   enabled: computed(() => Boolean(runId.value)),
 })
