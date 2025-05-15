@@ -139,7 +139,6 @@ const workflowQuery = useQuery({
     //   throw error // Re-throw to let useQuery know there was an error
     // }
   },
-  retry: false,
   refetchOnWindowFocus: false,
 })
 
@@ -217,7 +216,6 @@ const parameters = computed(() => {
 // Computed nodes and edges
 const nodes = computed(() => {
   const steps = workflowQuery.data.value?.steps || []
-
   return steps.map((step: Step, index: number) => ({
     id: step.id,
     type: 'default',
@@ -259,15 +257,23 @@ const onFlowInit = () => {
 
 <style scoped>
 .container {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
 }
 
 .details-container {
   display: flex;
+  width: 100%;
+  height: 100%;
 }
+
+.flow-container {
+  width: 100%;
+  height: 100%;
+  /* flex: 2; */
+  /* background-color: #f5f5f5; */
+}
+
 .parameters-container {
   width: 100%;
   height: 100%;
@@ -321,13 +327,6 @@ button:hover {
 button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
-}
-
-.flow-container {
-  width: 100%;
-  height: 100%;
-  /* flex: 2; */
-  /* background-color: #f5f5f5; */
 }
 
 .loading,
