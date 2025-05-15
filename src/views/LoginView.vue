@@ -3,7 +3,7 @@
     <input v-model="email" placeholder="Email" />
     <input v-model="password" type="password" placeholder="Password" />
     <button type="submit" :disabled="loginMutation.isPending.value">Login</button>
-    <div v-if="loginMutation.isError" class="error">
+    <div v-if="loginMutation.isError.value" class="error">
       {{ loginMutation.error.value?.message || 'Login failed' }}
     </div>
   </form>
