@@ -58,6 +58,12 @@
         <span v-else-if="runQuery.isError.value"
           >Error loading run data: {{ runQuery.error.value?.message }}</span
         >
+        <a
+          v-if="runQuery.data.value?.run_url"
+          :href="runQuery.data.value?.run_url"
+          target="_blank"
+          rel="noreferrer"
+          >Run url</a>
         <pre :key="runQuery.data.value?.id" v-else-if="runQuery.data.value">{{
           runQuery.data.value
         }}</pre>
