@@ -1,17 +1,34 @@
 <template>
-  <div class="home">
-    <h3>What do you want to build?</h3>
-    <textarea
-      v-model="prompt"
-      placeholder="Type your text here..."
-      rows="10"
-      cols="70"
-      class="text-area"
-    ></textarea>
-    <div class="button-container">
-      <button @click="compose" :disabled="mutation.isPending.value">Compose</button>
+  <form class="home" @submit.prevent="compose" name="compose-form">
+    <div>
+      <label for="prompt">What do you want to build?</label>
+      <textarea
+        name="prompt"
+        id="prompt"
+        :aria-required="true"
+        v-model="prompt"
+        placeholder="Type your text here..."
+        rows="10"
+        cols="70"
+        class="text-area"
+      ></textarea>
     </div>
-  </div>
+    <div>
+      <label for="name">Give it a name</label>
+      <input
+        name="name"
+        id="name"
+        v-model="name"
+        type="text"
+        placeholder="Give it a name.."
+        autocomplete="workflow-name"
+        :aria-required="true"
+      />
+    </div>
+    <div class="button-container">
+      <button type="submit" :disabled="mutation.isPending.value">Compose</button>
+    </div>
+  </form>
 </template>
 
 <script setup lang="ts">
@@ -26,6 +43,7 @@ const router = useRouter()
 const workflowStore = useWorkflowsStore()
 
 const prompt = ref('generate a kubeflow pipeline that converts document to podcast')
+const name = ref('Document to Podcast test')
 const mutation = useMutation({
   mutationFn: (data: { name: string; prompt: string }) => api.post('/workflows/generate/', data),
   onSuccess: (response) => {
@@ -45,10 +63,18 @@ const compose = () => {
     return
   }
   // Call the API to get the workflow
-  mutation.mutate({ name: 'test', prompt: prompt.value })
+  mutation.mutate({ name: name.value, prompt: prompt.value })
 }
 </script>
 <style scoped>
+.home {
+  max-width: 2000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .text-area {
   width: 100%;
   height: 200px;
@@ -58,7 +84,7 @@ const compose = () => {
 }
 .button-container {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .button-container button {
@@ -77,5 +103,12 @@ const compose = () => {
 .button-container button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 </style>

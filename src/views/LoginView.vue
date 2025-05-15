@@ -1,7 +1,7 @@
 <template>
-  <form @submit.prevent="handleLogin" class="login-form">
-    <input v-model="email" placeholder="Email" />
-    <input v-model="password" type="password" placeholder="Password" />
+  <form @submit.prevent="handleLogin" class="login-form" name="login-form">
+    <input v-model="email" placeholder="Email" :aria-required="true" />
+    <input v-model="password" type="password" placeholder="Password" :aria-required="true" />
     <button type="submit" :disabled="loginMutation.isPending.value">Login</button>
     <div v-if="loginMutation.isError.value" class="error">
       {{ loginMutation.error.value?.message || 'Login failed' }}
@@ -33,9 +33,7 @@ const loginMutation = useMutation({
 })
 
 const handleLogin = () => {
-  loginMutation.mutate(
-    { email: email.value, password: password.value },
-  )
+  loginMutation.mutate({ email: email.value, password: password.value })
 }
 </script>
 

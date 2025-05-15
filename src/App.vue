@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 100%;">
+  <div style="width: 100%; height: 100%">
     <VueQueryDevtools />
     <button v-if="authStore.isAuthenticated" type="button" @click="logout">Logout</button>
     <RouterView />
