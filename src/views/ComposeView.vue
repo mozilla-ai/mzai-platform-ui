@@ -35,7 +35,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '@/helpers/api'
-import { useMutation } from '@tanstack/vue-query'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import type { AxiosError } from 'axios'
 // import { useWorkflowsStore } from '@/stores/workflows'
 
@@ -57,6 +57,7 @@ const mutation = useMutation({
   },
 })
 
+const queryClient = useQueryClient()
 const compose = () => {
   if (!prompt.value) {
     alert('Please enter a prompt')
@@ -64,6 +65,9 @@ const compose = () => {
   }
   // Call the API to get the workflow
   mutation.mutate({ name: name.value, prompt: prompt.value })
+  queryClient.invalidateQueries({
+    queryKey: ['workflows'],
+  })
 }
 </script>
 <style scoped>

@@ -4,10 +4,16 @@ import { useAuthStore } from '@/stores/auth'
 const routes: Array<RouteRecordRaw> = [
   { path: '/login', component: () => import('@/views/LoginView.vue'), name: 'Login' },
   {
-    path: '/',
+    path: '/compose',
     component: () => import('@/views/ComposeView.vue'),
     meta: { requiresAuth: true },
     name: 'Compose',
+  },
+  {
+    path: '/workflows',
+    component: () => import('@/views/WorkflowsView.vue'),
+    meta: { requiresAuth: true },
+    name: 'Workflows',
   },
   {
     path: '/workflow-details/:workflowId',
@@ -16,7 +22,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'WorkflowDetails',
     props: (route) => ({ workflowId: route.params.workflowId }), // Pass text as a prop from query parameter
   },
-  { path: '/:pathMatch(.*)*', redirect: '/' }, // Redirect to home for any unmatched routes
+  { path: '/:pathMatch(.*)*', redirect: '/workflows' }, // Redirect to home for any unmatched routes
 ]
 
 const router = createRouter({
