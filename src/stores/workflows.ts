@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 
-type WorkflowResponse = {
+export type WorkflowResponse = {
   workflowId: string
   description: string
   steps: Step[]

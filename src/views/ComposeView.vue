@@ -1,5 +1,5 @@
 <template>
-  <form class="home" @submit.prevent="compose" name="compose-form">
+  <form class="compose-form" @submit.prevent="compose" name="compose-form">
     <div>
       <label for="prompt">What do you want to build?</label>
       <textarea
@@ -37,10 +37,10 @@ import { useRouter } from 'vue-router'
 import { api } from '@/helpers/api'
 import { useMutation } from '@tanstack/vue-query'
 import type { AxiosError } from 'axios'
-import { useWorkflowsStore } from '@/stores/workflows'
+// import { useWorkflowsStore } from '@/stores/workflows'
 
 const router = useRouter()
-const workflowStore = useWorkflowsStore()
+// const workflowStore = useWorkflowsStore()
 
 const prompt = ref('generate a kubeflow pipeline that converts document to podcast')
 const name = ref('Document to Podcast test')
@@ -48,7 +48,7 @@ const mutation = useMutation({
   mutationFn: (data: { name: string; prompt: string }) => api.post('/workflows/generate/', data),
   onSuccess: (response) => {
     const workflowId = response.data.workflowId
-    workflowStore.addWorkflow(workflowId, response.data)
+    // workflowStore.addWorkflow(workflowId, response.data)
     router.push({ name: 'WorkflowDetails', params: { workflowId } })
   },
   onError: (error: AxiosError) => {
@@ -67,7 +67,7 @@ const compose = () => {
 }
 </script>
 <style scoped>
-.home {
+.compose-form {
   max-width: 2000px;
   margin: 0 auto;
   display: flex;
