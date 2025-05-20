@@ -1,6 +1,12 @@
 <template>
   <div class="container">
-    <div class="details-container">
+    <div v-if="workflowQuery.isLoading.value && !workflowQuery.data.value" class="loading">
+      Loading workflow data...
+    </div>
+    <div v-else-if="workflowQuery.isError.value && !workflowQuery.data.value" class="error">
+      Error loading workflow: {{ workflowQuery.error.value?.message || 'Unknown error' }}
+    </div>
+    <div class="details-container" v-else>
       <form class="parameters-container" @submit="handleSubmit" name="workflow-form">
         <div v-for="parameter in parameters" :key="parameter.key" class="parameter-field">
           <label class="label" :for="parameter.key" :aria-required="parameter.required"
@@ -38,15 +44,9 @@
           <!-- <Controls /> -->
           <!-- <MiniMap /> -->
         </VueFlow>
-        <div v-else-if="workflowQuery.isLoading && !workflowQuery.data" class="loading">
-          Loading workflow data...
-        </div>
-        <div v-else-if="workflowQuery.isError && !workflowQuery.data" class="error">
-          Error loading workflow: {{ workflowQuery.error.value?.message || 'Unknown error' }}
-        </div>
       </div>
     </div>
-    <div class="results">
+    <div class="results" v-if="workflowQuery.data.value">
       <h2>Results</h2>
       <div class="mutation-results">
         <div class="no-results" v-if="!runQuery.data.value">
@@ -89,7 +89,6 @@ import { useVueFlow, VueFlow } from '@vue-flow/core'
 import { useQuery, useMutation } from '@tanstack/vue-query'
 import { api } from '@/helpers/api'
 import type { AxiosError } from 'axios'
-import sampleResponse from '@/helpers/sample-response.json'
 import type { WorkflowResponse } from '@/stores/workflows'
 // import { useWorkflowsStore } from '@/stores/workflows'
 
@@ -126,12 +125,11 @@ const { fitView } = useVueFlow()
 // const workflowStore = useWorkflowsStore()
 // Fetch workflow data with useQuery
 const workflowQuery = useQuery({
-  initialData: sampleResponse, // Use sample data while loading or on error
   queryKey: ['workflow', props.workflowId],
   queryFn: async () => {
     // return workflowStore.workflows[props.workflowId] || sampleResponse
     try {
-      const response = await api.get<WorkflowResponse>(`/workflows/${props.workflowId}/details/`)
+      const response = await api.get<WorkflowResponse>(`/workflows/${props.workflowId}/`)
       return response.data
     } catch (error: unknown) {
       // Show alert when an error occurs
@@ -204,7 +202,7 @@ const handleSubmit = (event: Event) => {
 
 // Calculate parameters based on workflow data
 const parameters = computed(() => {
-  const steps = workflowQuery.data.value?.steps || []
+  const steps = workflowQuery.data.value?.json.steps || []
 
   return steps.flatMap((step: Step) => {
     return step.inputs.map((input: StepInput) => ({
@@ -217,7 +215,7 @@ const parameters = computed(() => {
 
 // Computed nodes and edges
 const nodes = computed(() => {
-  const steps = workflowQuery.data.value?.steps || []
+  const steps = workflowQuery.data.value?.json.steps || []
   return steps.map((step: Step, index: number) => ({
     id: step.id,
     type: 'default',
@@ -230,7 +228,7 @@ const nodes = computed(() => {
 })
 
 const edges = computed(() => {
-  const steps = workflowQuery.data.value?.steps || []
+  const steps = workflowQuery.data.value?.json.steps || []
   const connections = []
 
   for (let i = 0; i < steps.length - 1; i++) {

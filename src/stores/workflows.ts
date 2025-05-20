@@ -2,9 +2,18 @@ import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 
 export type WorkflowResponse = {
-  workflowId: string
-  description: string
-  steps: Step[]
+  id: string
+  name: string
+  yaml_s3_key: string
+  status: string
+  webhook_uuid: string
+  created_at: string
+  updated_at: string
+  json: {
+    workflowId: string
+    description: string
+    steps: Step[]
+  }
 }
 
 type StepInput = {
