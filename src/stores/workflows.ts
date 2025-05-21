@@ -14,6 +14,18 @@ export type WorkflowResponse = {
     description: string
     steps: Step[]
   }
+  runs: Run[]
+}
+
+type Run = {
+  id: string
+  workflow_id: string
+  kfp_run_id: string
+  status: string
+  started_at: string
+  finished_at: string
+  yaml_snapshot_s3_key: string
+  run_url: string
 }
 
 type StepInput = {

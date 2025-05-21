@@ -46,38 +46,55 @@
         </VueFlow>
       </div>
     </div>
-    <div class="results" v-if="workflowQuery.data.value">
-      <h2>Results</h2>
-      <div class="mutation-results">
-        <div class="no-results" v-if="!runQuery.data.value">
-          No results yet. Submit the form to see results.
+    <div class="bottom-container" v-if="workflowQuery.data.value">
+      <section class="runs-container" v-if="workflowQuery.data.value.runs">
+        <h2>runs</h2>
+        <ul class="runs-list">
+          <li v-for="run in workflowQuery.data.value.runs" :key="run.id" class="run">
+            <p>id: {{ run.id }}</p>
+            <p>status: {{ run.status }}</p>
+            <p>started at: {{ new Date(run.started_at).toLocaleString() }}</p>
+            <p>finished at: {{ new Date(run.finished_at).toLocaleString() }}</p>
+            <p>kfp_run_id: {{ run.kfp_run_id }}</p>
+            <p>run_url: {{ run.run_url }}</p>
+            <p>yaml_snapshot_s3_key: {{ run.yaml_snapshot_s3_key }}</p>
+            <button @click="runId = run.id">View</button>
+          </li>
+        </ul>
+      </section>
+      <section class="results-container" v-if="runQuery.data.value">
+        <h2>Results</h2>
+        <div class="mutation-results">
+          <div class="no-results" v-if="!runQuery.data.value">
+            No results yet. Submit the form to see results.
+          </div>
         </div>
-      </div>
-      <div class="run-data">
-        <a
-          v-if="runQuery.data.value?.run_url"
-          :href="runQuery.data.value?.run_url"
-          target="_blank"
-          rel="noreferrer"
-          >Run url</a
-        >
-        <div v-if="runQuery.isFetching.value">Loading run data...</div>
-        <div v-else-if="runQuery.isError.value">
-          Error loading run data: {{ runQuery.error.value?.message }}
+        <div class="run-data">
+          <a
+            v-if="runQuery.data.value?.run_url"
+            :href="runQuery.data.value?.run_url"
+            target="_blank"
+            rel="noreferrer"
+            >Run url</a
+          >
+          <div v-if="runQuery.isFetching.value">Loading run data...</div>
+          <div v-else-if="runQuery.isError.value">
+            Error loading run data: {{ runQuery.error.value?.message }}
+          </div>
+          <pre :key="runQuery.data.value?.id" v-else-if="runQuery.data.value">{{
+            runQuery.data.value
+          }}</pre>
+          <audio
+            :key="runQuery.data.value?.url"
+            :src="runQuery.data.value?.url"
+            v-if="runQuery.data.value?.status === 'Succeeded'"
+            controls
+            preload="metadata"
+          >
+            Your browser does not support the audio element.
+          </audio>
         </div>
-        <pre :key="runQuery.data.value?.id" v-else-if="runQuery.data.value">{{
-          runQuery.data.value
-        }}</pre>
-        <audio
-          :key="runQuery.data.value?.url"
-          :src="runQuery.data.value?.url"
-          v-if="runQuery.data.value?.status === 'Succeeded'"
-          controls
-          preload="metadata"
-        >
-          Your browser does not support the audio element.
-        </audio>
-      </div>
+      </section>
     </div>
   </div>
 </template>
@@ -274,29 +291,53 @@ const onFlowInit = () => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  overflow-y: auto;
 }
 
 .details-container {
   display: flex;
-  width: 100%;
-  height: 100%;
+  flex: 1;
+  gap: 1rem;
 }
 
-.flow-container {
-  width: 100%;
-  height: 100%;
-  /* flex: 2; */
+.bottom-container {
+  display: flex;
+  gap: 1rem;
   /* background-color: #f5f5f5; */
 }
 
+.results-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.runs-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.runs {
+  display: flex;
+  flex-direction: column;
+  /* gap: 1rem; */
+}
+
+.flow-container {
+  flex: 1;
+  /* flex: 2; */
+  background-color: darkgrey;
+}
+
 .parameters-container {
-  width: 100%;
-  height: 100%;
+  /* width: 100%;
+  height: 100%; */
   display: flex;
   align-content: center;
   flex-direction: column;
   gap: 1rem;
-  /* flex: 1; */
+  flex: 1;
   /* background-color: #f5f5f5; */
 }
 
@@ -349,10 +390,33 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  width: 100%;
+  /* height: 100%;
+  width: 100%; */
   font-size: 1.2rem;
   color: #555;
+}
+
+.runs-list {
+  list-style-type: none;
+  padding: 0;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.run {
+  border: 1px solid #8ca6d5;
+  border-radius: 0.5rem;
+  color: #7f8ec6;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.run:hover {
+  background-color: #475fb3;
+  color: white;
 }
 
 .error {
