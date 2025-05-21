@@ -7,7 +7,7 @@
       Error loading workflow: {{ workflowQuery.error.value?.message || 'Unknown error' }}
     </div>
     <div class="details-container" v-else>
-      <form class="parameters-container" @submit="handleSubmit" name="workflow-form">
+      <form class="form-container" @submit="handleSubmit" name="workflow-form">
         <div v-for="parameter in parameters" :key="parameter.key" class="parameter-field">
           <label class="label" :for="parameter.key" :aria-required="parameter.required"
             >{{ parameter.key }}
@@ -55,9 +55,9 @@
             <p>status: {{ run.status }}</p>
             <p>started at: {{ run.started_at }}</p>
             <p>finished at: {{ run.finished_at }}</p>
-            <p>kfp_run_id: {{ run.kfp_run_id }}</p>
+            <!-- <p>kfp_run_id: {{ run.kfp_run_id }}</p>
             <p>run_url: {{ run.run_url }}</p>
-            <p>yaml_snapshot_s3_key: {{ run.yaml_snapshot_s3_key }}</p>
+            <p>yaml_snapshot_s3_key: {{ run.yaml_snapshot_s3_key }}</p> -->
             <!-- <button type="button">View</button> -->
           </li>
         </ul>
@@ -307,19 +307,22 @@ const onFlowInit = () => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  overflow-y: auto;
+  overflow-y: hidden;
+  height: 100vh;
 }
 
 .details-container {
   display: flex;
-  flex: 1;
+  flex: 3;
   gap: 1rem;
+  overflow-y: auto;
 }
 
 .bottom-container {
   display: flex;
   gap: 1rem;
-  /* background-color: #f5f5f5; */
+  flex: 1;
+  overflow-y: auto;
 }
 
 .results-container {
@@ -347,7 +350,7 @@ const onFlowInit = () => {
   background-color: darkgrey;
 }
 
-.parameters-container {
+.form-container {
   /* width: 100%;
   height: 100%; */
   display: flex;
@@ -361,7 +364,6 @@ const onFlowInit = () => {
 .parameter-field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 .label {
   font-size: 1rem;
