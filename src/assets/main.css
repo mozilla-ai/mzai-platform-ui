@@ -39,6 +39,17 @@ button:disabled {
   cursor: not-allowed;
 }
 
+.outline:hover {
+  background-color: #32577f;
+  color: #fff;
+}
+
+.outline {
+  border: 2px dashed #8ca6d5;
+  background: none;
+  color: #8ca6d5;
+}
+
 ul {
   list-style-type: none;
   padding: 0;

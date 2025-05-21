@@ -5,10 +5,13 @@
   </div>
   <div class="workflows">
     <h1>Workflows</h1>
-    <RouterLink to="compose" custom v-slot="{ navigate }">
-      <button @click="navigate" type="button"><span class="icon">➕</span> Create New</button>
-    </RouterLink>
     <ul class="workflows-list">
+      <RouterLink to="compose" custom v-slot="{ navigate }">
+        <button class="add-new-card outline" @click="navigate" type="button">
+          <span class="icon">➕</span>
+          Create New
+        </button>
+      </RouterLink>
       <li v-for="workflow in workflowsQuery.data.value" :key="workflow.id" class="workflow">
         <RouterLink :to="{ name: 'WorkflowDetails', params: { workflowId: workflow.id } }">
           <h2>{{ workflow.name }}</h2>
@@ -63,7 +66,11 @@ const workflowsQuery = useQuery<Workflow[]>({
   gap: 1rem;
 }
 
+.add-new-card {
+  min-height: 5rem;
+}
+
 .icon {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
 }
 </style>
