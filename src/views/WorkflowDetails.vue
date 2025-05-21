@@ -388,21 +388,6 @@ input:invalid:focus {
   background-color: #f5f5f5;
   cursor: not-allowed;
 }
-button {
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #0056b3;
-}
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
 
 .loading,
 .error {
@@ -413,29 +398,6 @@ button:disabled {
   width: 100%; */
   font-size: 1.2rem;
   color: #555;
-}
-
-.runs-list {
-  list-style-type: none;
-  padding: 0;
-  gap: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.run {
-  border: 1px solid #8ca6d5;
-  border-radius: 0.5rem;
-  color: #7f8ec6;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-}
-
-.run:hover {
-  background-color: #475fb3;
-  color: white;
 }
 
 .error {

@@ -14,15 +14,62 @@
   height: 100%;
 }
 
-a {
+button {
+  /* width: 20rem; */
+  background-color: #4c83be;
+  /* border: dashed 1px rgb(18, 102, 180); */
+  color: white;
+  padding: 0.5rem;
+  text-align: center;
   text-decoration: none;
-  color: rgb(18, 102, 180);
+  display: flex;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  cursor: pointer;
   transition: 0.4s;
-  /* padding: 3px; */
+}
+button:hover {
+  background-color: #32577f;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(201, 100%, 37%, 0.2);
-  }
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+li {
+  border: 1px solid #8ca6d5;
+  border-radius: 0.5rem;
+  color: #7f8ec6;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+li > a {
+  color: inherit;
+  text-decoration: none;
+}
+
+li > a:hover {
+  background: none;
+}
+
+li:hover {
+  background-color: #32577f;
+  color: white;
 }

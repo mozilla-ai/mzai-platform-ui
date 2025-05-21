@@ -91,24 +91,6 @@ const compose = () => {
   justify-content: flex-end;
 }
 
-.button-container button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.button-container button:hover {
-  background-color: #0056b3;
-}
-
-.button-container button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
 input {
   width: 100%;
   padding: 10px;

@@ -9,18 +9,16 @@
       <button @click="navigate" type="button"><span class="icon">➕</span> Create New</button>
     </RouterLink>
     <ul class="workflows-list">
-      <li v-for="workflow in workflowsQuery.data.value" :key="workflow.id">
+      <li v-for="workflow in workflowsQuery.data.value" :key="workflow.id" class="workflow">
         <RouterLink :to="{ name: 'WorkflowDetails', params: { workflowId: workflow.id } }">
-          <div class="workflow">
-            <h2>{{ workflow.name }}</h2>
-            <p>id: {{ workflow.id }}</p>
-            <em>Status: {{ workflow.status }}</em>
-            <p>prompt: {{ workflow.prompt }}</p>
-            <p>Created at: {{ new Date(workflow.created_at).toLocaleString() }}</p>
-            <p>Updated at: {{ new Date(workflow.updated_at).toLocaleString() }}</p>
-            <p>Webhook UUID: {{ workflow.webhook_uuid }}</p>
-            <p>YAML S3 Key: {{ workflow.yaml_s3_key }}</p>
-          </div>
+          <h2>{{ workflow.name }}</h2>
+          <p>id: {{ workflow.id }}</p>
+          <em>Status: {{ workflow.status }}</em>
+          <p>prompt: {{ workflow.prompt }}</p>
+          <p>Created at: {{ new Date(workflow.created_at).toLocaleString() }}</p>
+          <p>Updated at: {{ new Date(workflow.updated_at).toLocaleString() }}</p>
+          <p>Webhook UUID: {{ workflow.webhook_uuid }}</p>
+          <p>YAML S3 Key: {{ workflow.yaml_s3_key }}</p>
         </RouterLink>
       </li>
     </ul>
@@ -65,52 +63,7 @@ const workflowsQuery = useQuery<Workflow[]>({
   gap: 1rem;
 }
 
-button {
-  width: 20rem;
-  background-color: #5370d5;
-  /* border: dashed 1px rgb(18, 102, 180); */
-  color: white;
-  padding: 0.5rem;
-  text-align: center;
-  text-decoration: none;
-  display: flex;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: 0.5rem;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #475fb3;
-  color: white;
-}
-
 .icon {
   font-size: 1.2rem;
-}
-
-.workflows-list {
-  list-style-type: none;
-  padding: 0;
-  gap: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.workflow {
-  border: 1px solid #8ca6d5;
-  border-radius: 0.5rem;
-  color: #7f8ec6;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.workflow:hover {
-  background-color: #475fb3;
-  color: white;
 }
 </style>

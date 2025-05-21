@@ -52,21 +52,4 @@ const handleLogin = () => {
   border: 1px solid #ccc;
   border-radius: 4px;
 }
-.login-form button {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.login-form button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.login-form button:hover {
-  background-color: #0056b3;
-}
 </style>
