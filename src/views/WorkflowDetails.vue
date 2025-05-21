@@ -100,6 +100,10 @@ type StepInput = {
   description?: string
 }
 
+type SomeError = {
+  detail: string
+}
+
 type Step = {
   id: string
   description: string
@@ -129,8 +133,10 @@ const workflowQuery = useQuery({
   queryFn: async () => {
     // return workflowStore.workflows[props.workflowId] || sampleResponse
     try {
-      const response = await api.get<WorkflowResponse>(`/workflows/${props.workflowId}/`)
-      if (response.data.detail) {
+      const response = await api.get<WorkflowResponse | SomeError>(
+        `/workflows/${props.workflowId}/`,
+      )
+      if (isErrorResponse(response.data)) {
         throw new Error(response.data.detail)
       }
       return response.data
@@ -145,6 +151,10 @@ const workflowQuery = useQuery({
   refetchOnWindowFocus: false,
   retry: 1,
 })
+
+function isErrorResponse(response: WorkflowResponse | SomeError): response is SomeError {
+  return (response as SomeError).detail !== undefined
+}
 
 // Form submission mutation
 const mutation = useMutation({
