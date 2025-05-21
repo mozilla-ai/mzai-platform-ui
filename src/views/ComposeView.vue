@@ -42,7 +42,7 @@ import type { AxiosError } from 'axios'
 const router = useRouter()
 // const workflowStore = useWorkflowsStore()
 
-const prompt = ref('generate a kubeflow pipeline that converts document to podcast')
+const prompt = ref('generate a pipeline that converts document to podcast')
 const name = ref('Document to Podcast test')
 const mutation = useMutation({
   mutationFn: (data: { name: string; prompt: string }) => api.post('/workflows/generate/', data),

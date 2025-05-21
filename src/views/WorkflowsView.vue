@@ -8,10 +8,19 @@
     <RouterLink to="compose" custom v-slot="{ navigate }">
       <button @click="navigate" type="button"><span class="icon">➕</span> Create New</button>
     </RouterLink>
-    <ul>
+    <ul class="workflows-list">
       <li v-for="workflow in workflowsQuery.data.value" :key="workflow.id">
         <RouterLink :to="{ name: 'WorkflowDetails', params: { workflowId: workflow.id } }">
-          {{ workflow.name }} - {{ workflow.id }}
+          <div class="workflow">
+            <h2>{{ workflow.name }}</h2>
+            <p>id: {{ workflow.id }}</p>
+            <em>Status: {{ workflow.status }}</em>
+            <p>prompt: {{ workflow.prompt }}</p>
+            <p>Created at: {{ new Date(workflow.created_at).toLocaleString() }}</p>
+            <p>Updated at: {{ new Date(workflow.updated_at).toLocaleString() }}</p>
+            <p>Webhook UUID: {{ workflow.webhook_uuid }}</p>
+            <p>YAML S3 Key: {{ workflow.yaml_s3_key }}</p>
+          </div>
         </RouterLink>
       </li>
     </ul>
@@ -23,11 +32,27 @@ import { api } from '@/helpers/api'
 import { useQuery } from '@tanstack/vue-query'
 import { RouterLink } from 'vue-router'
 
-const workflowsQuery = useQuery({
+type Workflow = {
+  created_at: string
+  id: string
+  name: string
+  status: string
+  updated_at: string
+  webhook_uuid: string
+  yaml_s3_key: string
+  prompt: string
+}
+
+const workflowsQuery = useQuery<Workflow[]>({
   queryKey: ['workflows'],
   queryFn: () => {
     return api.get('/workflows').then((response) => {
       return response.data
+    })
+  },
+  select: (data: Workflow[]) => {
+    return data.sort((a: Workflow, b: Workflow) => {
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     })
   },
 })
@@ -67,8 +92,25 @@ button:hover {
   font-size: 1.2rem;
 }
 
-ul {
+.workflows-list {
   list-style-type: none;
   padding: 0;
+  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.workflow {
+  border: 1px solid #8ca6d5;
+  border-radius: 0.5rem;
+  color: #7f8ec6;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.workflow:hover {
+  background-color: #475fb3;
+  color: white;
 }
 </style>

@@ -18,7 +18,7 @@ a {
   text-decoration: none;
   color: rgb(18, 102, 180);
   transition: 0.4s;
-  padding: 3px;
+  /* padding: 3px; */
 }
 
 @media (hover: hover) {
