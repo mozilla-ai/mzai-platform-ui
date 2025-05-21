@@ -84,7 +84,7 @@ const compose = () => {
   width: 100%;
   height: 200px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
 }
 .button-container {
@@ -95,7 +95,7 @@ const compose = () => {
 input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
 }
 </style>

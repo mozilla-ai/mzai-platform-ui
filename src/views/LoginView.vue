@@ -55,7 +55,7 @@ const handleLogin = () => {
 .login-form input {
   margin-bottom: 10px;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
 }
 </style>

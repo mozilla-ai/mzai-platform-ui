@@ -22,32 +22,85 @@
 }
 
 /* semantic color variables for this project */
-:root {
-  --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
+.theme-light {
+  --color-background: #f6f8fa;
+  --color-background-soft: #f3f4f6;
+  --color-background-mute: #e5e7eb;
 
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
+  --color-border: #e5e7eb;
+  --color-border-hover: #b6c2d1;
 
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
+  --color-heading: #1e293b;
+  --color-text: #2d3748;
+  --color-text-secondary: #64748b;
 
   --section-gap: 160px;
+
+  --card-background: #fff;
+  --card-background-hover: #f3f4f6;
+  --card-text-color: #1e293b;
+  --card-border-color: #e5e7eb;
+
+  --button-background-color: #2563eb;
+  --button-hover-color: #1d4ed8;
+  --button-active-color: #1e40af;
+  --button-outline-text-color: #2563eb;
+  --button-outline-hover-text-color: #2563eb;
+  --button-outline-background: #e0e7ef;
+  --button-disabled-background-color: #e5e7eb;
+  --button-disabled-text-color: #94a3b8;
+
+  --input-background: #fff;
+  --input-border: #cbd5e1;
+  --input-border-focus: #2563eb;
+  --input-text: #2d3748;
+
+  --link-color: #2563eb;
+  --link-hover-color: #1d4ed8;
+
+  --scrollbar-thumb: #cbd5e1;
+  --scrollbar-track: #f1f5f9;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
+.theme-dark {
+  --color-background: #181a20;
+  --color-background-soft: #232b3a;
+  --color-background-mute: #232b3a;
 
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
+  --color-border: #374151;
+  --color-border-hover: #8ca6d5;
 
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-  }
+  --color-heading: #e5e7eb;
+  --color-text: #bfc8d6;
+  --color-text-secondary: #7f8ea3;
+
+  --section-gap: 160px;
+
+  --card-background: transparent;
+  --card-background-hover: rgba(44, 62, 80, 0.15);
+  --card-text-color: #bfc8d6;
+  --card-border-color: #8ca6d5;
+
+
+  --button-background-color: #32577f;
+  --button-hover-color: #4c83be;
+  --button-active-color: #223a5e;
+  --button-outline-text-color: #8ca6d5;
+  --button-outline-hover-text-color: #fff;
+  --button-outline-background: rgba(44, 62, 80, 0.15);
+  --button-disabled-background-color: #374151;
+  --button-disabled-text-color: #6b7280;
+
+  --input-background: #232b3a;
+  --input-border: #374151;
+  --input-border-focus: #4c83be;
+  --input-text: #bfc8d6;
+
+  --link-color: #8ca6d5;
+  --link-hover-color: #bfc8d6;
+
+  --scrollbar-thumb: #374151;
+  --scrollbar-track: #232b3a;
 }
 
 *,

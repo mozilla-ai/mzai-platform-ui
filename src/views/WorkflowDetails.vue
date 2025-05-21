@@ -349,7 +349,7 @@ const onFlowInit = () => {
 .flow-container {
   flex: 1;
   /* flex: 2; */
-  background-color: #e3e3e3;
+  background-color: var(--color-background-mute);
 }
 
 .form-container {

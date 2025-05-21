@@ -13,41 +13,48 @@
 }
 
 button {
-  /* width: 20rem; */
-  background-color: #4c83be;
-  /* border: dashed 1px rgb(18, 102, 180); */
-  color: white;
-  padding: 0.5rem;
-  text-align: center;
-  text-decoration: none;
-  display: flex;
-  font-size: 1rem;
-  font-weight: bold;
+  background: var(--button-background-color);
+  color: #fff;
+  border: none;
   border-radius: 0.5rem;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: 0.4s;
 }
-button:hover {
-  background-color: #32577f;
-}
 
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.outline:hover {
-  background-color: #32577f;
+button:hover,
+button:focus {
+  background: var(--button-hover-color);
   color: #fff;
 }
 
+button:active {
+  background: var(--button-active-color);
+}
+
+button:disabled {
+  background: var(--button-disabled-background-color);
+  color: var(--button-disabled-text-color);
+  cursor: not-allowed;
+}
+
 .outline {
-  border: 2px dashed #8ca6d5;
-  background: none;
-  color: #8ca6d5;
+  background: transparent;
+  color: var(--button-outline-text-color);
+  border: 0.125rem dashed var(--button-outline-text-color);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 00.4s;
+}
+
+.outline:hover,
+.outline:focus {
+  background: var(--button-outline-background);
+  color: var(--button-outline-hover-text-color);
+  border-color: var(--button-background-color);
 }
 
 ul {
@@ -59,8 +66,7 @@ ul {
 }
 
 a {
-  color: pink;
-  transition: 0.4s;
+  color: 0.4s;
   text-decoration: none;
 }
 
@@ -68,15 +74,24 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Card (li) */
 li {
-  border: 1px solid #8ca6d5;
+  background: var(--card-background);
+  border: 0.09375rem solid var(--card-border-color);
   border-radius: 0.5rem;
-  color: #7f8ec6;
+  color: var(--card-text-color);
   padding: 1rem;
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  transition: 0.4s;
+  transition: background 0.2s, color 00.4s;
+  box-shadow: 0 0.125rem 0.5rem 0 rgba(30,41,59,0.04);
+}
+
+li:hover {
+  background: var(--card-background-hover);
+  border-color: var(--color-border-hover);
+  color: var(--color-heading);
 }
 
 li > a {
@@ -89,15 +104,39 @@ li > a:hover {
   text-decoration: inherit;
 }
 
-li:hover {
-  background-color: #32577f;
-  color: white;
-}
-
 label {
   font-size: 1rem;
   font-weight: bold;
 }
+
+input,
+textarea,
+select {
+  background: var(--input-background);
+  color: var(--input-text);
+  border: 1px solid var(--input-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: border-color 0.2s, 0.4s;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--input-border-focus);
+  outline: none;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background: var(--button-disabled-background-color);
+  color: var(--button-disabled-text-color);
+  cursor: not-allowed;
+}
+
 input {
   padding: 0.5rem;
   border: 1px solid #ccc;
@@ -113,6 +152,7 @@ input:focus {
   border-color: #007bff;
   outline: none;
 }
+
 input:disabled {
   background-color: #f5f5f5;
   cursor: not-allowed;
