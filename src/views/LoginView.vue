@@ -1,8 +1,14 @@
 <template>
   <form @submit.prevent="handleLogin" class="login-form" name="login-form">
     <h2 style="text-align: center; margin-bottom: 1rem">Mzai Platform</h2>
-    <input v-model="email" placeholder="Email" :aria-required="true" />
-    <input v-model="password" type="password" placeholder="Password" :aria-required="true" />
+    <input v-model="email" placeholder="Email" :aria-required="true" required />
+    <input
+      v-model="password"
+      type="password"
+      placeholder="Password"
+      :aria-required="true"
+      required
+    />
     <button type="submit" :disabled="loginMutation.isPending.value">Login</button>
     <div v-if="loginMutation.isError.value" class="error">
       {{ loginMutation.error.value?.message || 'Login failed' }}

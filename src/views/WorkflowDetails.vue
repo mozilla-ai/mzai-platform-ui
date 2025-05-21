@@ -151,9 +151,8 @@ const { fitView } = useVueFlow()
 // const workflowStore = useWorkflowsStore()
 // Fetch workflow data with useQuery
 const workflowQuery = useQuery({
-  queryKey: ['workflow', props.workflowId],
+  queryKey: ['workflows', props.workflowId],
   queryFn: async () => {
-    // return workflowStore.workflows[props.workflowId] || sampleResponse
     try {
       const response = await api.get<WorkflowResponse | SomeError>(
         `/workflows/${props.workflowId}/`,
@@ -188,16 +187,17 @@ const mutation = useMutation({
     alert('Workflow run submitted successfully!')
     runId.value = data.id
     // Invalidate the query to refetch the runs
-    queryClient.invalidateQueries({ queryKey: ['runs', props.workflowId] })
   },
   onError: (error: AxiosError) => {
     const errorMessage = error.response?.data ? JSON.stringify(error.response.data) : error.message
     alert(`Error: ${errorMessage}`)
+  },
+  onSettled: () => {
     queryClient.invalidateQueries({ queryKey: ['runs', props.workflowId] })
   },
 })
 const runQuery = useQuery({
-  queryKey: computed(() => ['run', runId.value]), // This is reactive
+  queryKey: computed(() => ['runs', runId.value]), // This is reactive
   queryFn: async () => {
     if (!runId.value) throw new Error('runId is not set') // safety check
 
@@ -364,29 +364,6 @@ const onFlowInit = () => {
 .parameter-field {
   display: flex;
   flex-direction: column;
-}
-.label {
-  font-size: 1rem;
-  font-weight: bold;
-}
-.input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 100%;
-}
-
-input:invalid:focus {
-  border: solid 2px red;
-}
-
-.input:focus {
-  border-color: #007bff;
-  outline: none;
-}
-.input:disabled {
-  background-color: #f5f5f5;
-  cursor: not-allowed;
 }
 
 .loading,

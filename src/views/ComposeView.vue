@@ -5,6 +5,7 @@
       <textarea
         name="prompt"
         id="prompt"
+        required
         :aria-required="true"
         v-model="prompt"
         placeholder="Type your text here..."
@@ -18,6 +19,7 @@
       <input
         name="name"
         id="name"
+        required
         v-model="name"
         type="text"
         placeholder="Give it a name.."
