@@ -130,6 +130,9 @@ const workflowQuery = useQuery({
     // return workflowStore.workflows[props.workflowId] || sampleResponse
     try {
       const response = await api.get<WorkflowResponse>(`/workflows/${props.workflowId}/`)
+      if (response.data.detail) {
+        throw new Error(response.data.detail)
+      }
       return response.data
     } catch (error: unknown) {
       // Show alert when an error occurs
@@ -140,6 +143,7 @@ const workflowQuery = useQuery({
     }
   },
   refetchOnWindowFocus: false,
+  retry: 1,
 })
 
 // Form submission mutation
