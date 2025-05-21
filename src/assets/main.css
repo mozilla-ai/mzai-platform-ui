@@ -47,7 +47,9 @@ button:disabled {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
-  transition: background 0.2s, color 00.4s;
+  transition:
+    background 0.2s,
+    color 00.4s;
 }
 
 .outline:hover,
@@ -84,8 +86,10 @@ li {
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  transition: background 0.2s, color 00.4s;
-  box-shadow: 0 0.125rem 0.5rem 0 rgba(30,41,59,0.04);
+  transition:
+    background 0.2s,
+    color 00.4s;
+  box-shadow: 0 0.125rem 0.5rem 0 rgba(30, 41, 59, 0.04);
 }
 
 li:hover {
@@ -117,7 +121,9 @@ select {
   border: 1px solid var(--input-border);
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
-  transition: border-color 0.2s, 0.4s;
+  transition:
+    border-color 0.2s,
+    0.4s;
   font-size: 1rem;
   box-sizing: border-box;
 }
