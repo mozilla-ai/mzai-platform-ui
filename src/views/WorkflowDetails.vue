@@ -47,20 +47,25 @@
       </div>
     </div>
     <div class="bottom-container" v-if="workflowQuery.data.value">
-      <section class="runs-container" v-if="workflowQuery.data.value.runs">
-        <h2>runs</h2>
-        <ul class="runs-list">
-          <li v-for="run in workflowQuery.data.value.runs" :key="run.id" class="run">
+      <section class="runs-container">
+        <ul class="runs-list" v-if="runsQuery.data.value.length">
+          <h2>runs</h2>
+          <li v-for="run in runsQuery.data.value" :key="run.id" class="run" @click="runId = run.id">
             <p>id: {{ run.id }}</p>
             <p>status: {{ run.status }}</p>
-            <p>started at: {{ new Date(run.started_at).toLocaleString() }}</p>
-            <p>finished at: {{ new Date(run.finished_at).toLocaleString() }}</p>
+            <p>started at: {{ run.started_at }}</p>
+            <p>finished at: {{ run.finished_at }}</p>
             <p>kfp_run_id: {{ run.kfp_run_id }}</p>
             <p>run_url: {{ run.run_url }}</p>
             <p>yaml_snapshot_s3_key: {{ run.yaml_snapshot_s3_key }}</p>
-            <button @click="runId = run.id">View</button>
+            <!-- <button type="button">View</button> -->
           </li>
         </ul>
+        <div v-if="runsQuery.isFetching.value">Loading runs...</div>
+        <div v-else-if="runsQuery.isError.value">
+          Error loading runs: {{ runsQuery.error.value?.message }}
+        </div>
+        <div v-else-if="!runsQuery.data.value.length">No runs found for this workflow.</div>
       </section>
       <section class="results-container" v-if="runQuery.data.value">
         <h2>Results</h2>
@@ -103,7 +108,7 @@
 import { computed, ref } from 'vue'
 import { useVueFlow, VueFlow } from '@vue-flow/core'
 // import { MiniMap } from '@vue-flow/additional-components'
-import { useQuery, useMutation } from '@tanstack/vue-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import { api } from '@/helpers/api'
 import type { AxiosError } from 'axios'
 import type { WorkflowResponse } from '@/stores/workflows'
@@ -140,7 +145,7 @@ const props = defineProps<{
 }>()
 
 const runId = ref()
-
+const queryClient = useQueryClient()
 // Destructure fitView and onFlowInit from useVueFlow
 const { fitView } = useVueFlow()
 // const workflowStore = useWorkflowsStore()
@@ -182,10 +187,13 @@ const mutation = useMutation({
   onSuccess: (data) => {
     alert('Workflow run submitted successfully!')
     runId.value = data.id
+    // Invalidate the query to refetch the runs
+    queryClient.invalidateQueries({ queryKey: ['runs', props.workflowId] })
   },
   onError: (error: AxiosError) => {
     const errorMessage = error.response?.data ? JSON.stringify(error.response.data) : error.message
     alert(`Error: ${errorMessage}`)
+    queryClient.invalidateQueries({ queryKey: ['runs', props.workflowId] })
   },
 })
 const runQuery = useQuery({
@@ -210,6 +218,14 @@ const runQuery = useQuery({
   refetchInterval: 5000, // Refetch every 5 seconds
   retry: false,
   enabled: computed(() => Boolean(runId.value)),
+})
+
+const runsQuery = useQuery({
+  queryKey: computed(() => ['runs', props.workflowId]),
+  queryFn: async () => {
+    const response = await api.get(`/workflows/${props.workflowId}/runs/`)
+    return response.data
+  },
 })
 
 const handleSubmit = (event: Event) => {
@@ -316,6 +332,7 @@ const onFlowInit = () => {
   display: flex;
   flex-direction: column;
   flex: 1;
+  overflow-y: auto;
 }
 
 .runs {
@@ -402,7 +419,6 @@ button:disabled {
   gap: 1rem;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
 }
 
 .run {
@@ -412,6 +428,7 @@ button:disabled {
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
 .run:hover {
