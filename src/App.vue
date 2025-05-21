@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 100%">
+  <div class="app">
     <VueQueryDevtools />
     <button class="logout-button" v-if="authStore.isAuthenticated" type="button" @click="logout">
       Logout
@@ -53,5 +53,11 @@ div {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 </style>

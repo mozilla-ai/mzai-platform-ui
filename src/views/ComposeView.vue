@@ -72,8 +72,7 @@ const compose = () => {
 </script>
 <style scoped>
 .compose-form {
-  max-width: 2000px;
-  margin: 0 auto;
+  margin: auto;
   display: flex;
   flex-direction: column;
   gap: 1rem;
