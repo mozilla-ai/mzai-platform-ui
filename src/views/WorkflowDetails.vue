@@ -61,7 +61,7 @@
             <!-- <button type="button">View</button> -->
           </li>
         </ul>
-        <div v-if="runsQuery.isFetching.value">Loading runs...</div>
+        <div v-if="runsQuery.isLoading.value">Loading runs...</div>
         <div v-else-if="runsQuery.isError.value">
           Error loading runs: {{ runsQuery.error.value?.message }}
         </div>
@@ -82,7 +82,7 @@
             rel="noreferrer"
             >Run url</a
           >
-          <div v-if="runQuery.isFetching.value">Loading run data...</div>
+          <div v-if="runQuery.isLoading.value">Loading run data...</div>
           <div v-else-if="runQuery.isError.value">
             Error loading run data: {{ runQuery.error.value?.message }}
           </div>
@@ -151,7 +151,7 @@ const { fitView } = useVueFlow()
 // const workflowStore = useWorkflowsStore()
 // Fetch workflow data with useQuery
 const workflowQuery = useQuery({
-  queryKey: ['workflows', props.workflowId],
+  queryKey: ['workflow', props.workflowId],
   queryFn: async () => {
     try {
       const response = await api.get<WorkflowResponse | SomeError>(
@@ -197,7 +197,7 @@ const mutation = useMutation({
   },
 })
 const runQuery = useQuery({
-  queryKey: computed(() => ['runs', runId.value]), // This is reactive
+  queryKey: computed(() => ['run', props.workflowId, runId.value]), // This is reactive
   queryFn: async () => {
     if (!runId.value) throw new Error('runId is not set') // safety check
 
