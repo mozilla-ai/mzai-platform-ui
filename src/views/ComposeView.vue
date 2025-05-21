@@ -47,7 +47,7 @@ const name = ref('Document to Podcast test')
 const mutation = useMutation({
   mutationFn: (data: { name: string; prompt: string }) => api.post('/workflows/generate/', data),
   onSuccess: (response) => {
-    const workflowId = response.data.workflowId
+    const workflowId = response.data.id
     // workflowStore.addWorkflow(workflowId, response.data)
     router.push({ name: 'WorkflowDetails', params: { workflowId } })
   },
