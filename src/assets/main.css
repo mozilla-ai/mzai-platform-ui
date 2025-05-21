@@ -47,9 +47,7 @@ button:disabled {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
-  transition:
-    background 0.2s,
-    color 00.4s;
+  transition: 0.4s;
 }
 
 .outline:hover,
@@ -86,16 +84,15 @@ li {
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  transition:
-    background 0.2s,
-    color 00.4s;
-  box-shadow: 0 0.125rem 0.5rem 0 rgba(30, 41, 59, 0.04);
+  transition: 0.4s;
+  box-shadow: var(--card-shadow);
 }
 
 li:hover {
   background: var(--card-background-hover);
   border-color: var(--color-border-hover);
   color: var(--color-heading);
+  box-shadow: 0 4px 24px 0 rgba(60, 60, 60, 0.1);
 }
 
 li > a {
@@ -121,9 +118,7 @@ select {
   border: 1px solid var(--input-border);
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
-  transition:
-    border-color 0.2s,
-    0.4s;
+  transition: 0.4s;
   font-size: 1rem;
   box-sizing: border-box;
 }
@@ -150,13 +145,13 @@ input {
   width: 100%;
 }
 
-input:invalid:focus {
-  border: solid 2px red;
-}
-
-input:focus {
+/* input:focus {
   border-color: #007bff;
   outline: none;
+} */
+
+input:user-invalid {
+  border: solid 2px red;
 }
 
 input:disabled {

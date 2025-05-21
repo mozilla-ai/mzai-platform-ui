@@ -23,43 +23,45 @@
 
 /* semantic color variables for this project */
 .theme-light {
-  --color-background: #f6f8fa;
-  --color-background-soft: #f3f4f6;
-  --color-background-mute: #e5e7eb;
+  --color-background: #f3f4f6; /* Neutral light gray */
+  --color-background-soft: #e5e7eb; /* Slightly deeper gray for panels */
+  --color-background-mute: #e0e1e3; /* Muted sections */
 
-  --color-border: #e5e7eb;
-  --color-border-hover: #b6c2d1;
+  --color-border: #d1d5db;
+  --color-border-hover: #94a3b8;
 
-  --color-heading: #1e293b;
-  --color-text: #2d3748;
-  --color-text-secondary: #64748b;
+  --color-heading: #1a233b;
+  --color-text: #232946;
+  --color-text-secondary: #6b7280;
 
-  --section-gap: 160px;
+  --section-gap: 10rem;
 
-  --card-background: #fff;
-  --card-background-hover: #f3f4f6;
-  --card-text-color: #1e293b;
-  --card-border-color: #e5e7eb;
+  --card-background: #f8fafc; /* Off-white for cards */
+  --card-background-hover: #eceef1;
+  --card-text-color: #232946;
+  --card-border-color: #d1d5db;
+  --card-shadow: 0 2px 12px 0 rgba(44, 62, 80, 0.06);
 
-  --button-background-color: #2563eb;
-  --button-hover-color: #1d4ed8;
-  --button-active-color: #1e40af;
-  --button-outline-text-color: #2563eb;
-  --button-outline-hover-text-color: #2563eb;
-  --button-outline-background: #e0e7ef;
-  --button-disabled-background-color: #e5e7eb;
-  --button-disabled-text-color: #94a3b8;
+  /* Deep teal accent for buttons/links */
+  --button-background-color: #176b87;
+  --button-hover-color: #155e75;
+  --button-active-color: #0f3a4a;
+  --button-outline-text-color: #176b87;
+  --button-outline-hover-text-color: #176b87; /* Use accent color, not white */
+  --button-outline-background: #e1e4ea;
+  --button-disabled-background-color: #eceef1;
+  --button-disabled-text-color: #a3aed6;
 
-  --input-background: #fff;
-  --input-border: #cbd5e1;
-  --input-border-focus: #2563eb;
-  --input-text: #2d3748;
+  --input-background: #f7f8fa;
+  --input-border: #d1d5db;
+  --input-border-focus: #176b87;
+  --input-text: #232946;
 
-  --link-color: #2563eb;
-  --link-hover-color: #1d4ed8;
+  --link-color: #176b87;
+  --link-hover-color: #155e75;
 
-  --scrollbar-thumb: #cbd5e1;
-  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #d1d5db;
+  --scrollbar-track: #f3f4f6;
 }
 
 .theme-dark {
