@@ -92,7 +92,7 @@
           <audio
             :key="runQuery.data.value?.url"
             :src="runQuery.data.value?.url"
-            v-if="runQuery.data.value?.status === 'Succeeded'"
+            v-if="runQuery.data.value?.status === 'SUCCEEDED'"
             controls
             preload="metadata"
           >
@@ -215,7 +215,9 @@ const runQuery = useQuery({
   */
     return response.data
   },
-  refetchInterval: 5000, // Refetch every 5 seconds
+  refetchInterval: (query) => {
+    return query.state.data?.status === 'RUNNING' ? 5000 : false
+  }, // Refetch every 5 seconds
   retry: false,
   enabled: computed(() => Boolean(runId.value)),
 })
