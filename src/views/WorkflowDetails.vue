@@ -333,16 +333,19 @@ const onFlowInit = () => {
 .results-container {
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  /* min-width: 0; */
   flex: 1;
+  overflow: auto;
+  /* white-space: nowrap; */
 }
 
 .runs-container {
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  /* min-width: 0; */
   flex: 1;
-  overflow-y: auto;
+  overflow: auto;
+  /* white-space: nowrap; */
 }
 
 .runs {
@@ -386,5 +389,9 @@ const onFlowInit = () => {
 
 .error {
   color: #d32f2f;
+}
+
+pre {
+  white-space: pre-wrap;
 }
 </style>
