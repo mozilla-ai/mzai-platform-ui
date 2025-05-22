@@ -318,7 +318,7 @@ const onFlowInit = () => {
 
 .details-container {
   display: flex;
-  flex: 3;
+  flex: 4;
   gap: 1rem;
   overflow-y: auto;
 }
