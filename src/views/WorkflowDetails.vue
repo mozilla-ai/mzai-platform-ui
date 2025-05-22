@@ -75,13 +75,15 @@
           </div>
         </div>
         <div class="run-data">
-          <a
-            v-if="runQuery.data.value?.run_url"
-            :href="runQuery.data.value?.run_url"
-            target="_blank"
-            rel="noreferrer"
-            >Run url</a
+          <audio
+            :key="runQuery.data.value?.artifact_url"
+            :src="runQuery.data.value?.artifact_url"
+            v-if="runQuery.data.value?.artifact_url"
+            controls
+            preload="metadata"
           >
+            Your browser does not support the audio element.
+          </audio>
           <div v-if="runQuery.isLoading.value">Loading run data...</div>
           <div v-else-if="runQuery.isError.value">
             Error loading run data: {{ runQuery.error.value?.message }}
@@ -89,15 +91,6 @@
           <pre :key="runQuery.data.value?.id" v-else-if="runQuery.data.value">{{
             runQuery.data.value
           }}</pre>
-          <audio
-            :key="runQuery.data.value?.url"
-            :src="runQuery.data.value?.url"
-            v-if="runQuery.data.value?.status === 'SUCCEEDED'"
-            controls
-            preload="metadata"
-          >
-            Your browser does not support the audio element.
-          </audio>
         </div>
       </section>
     </div>
@@ -111,7 +104,7 @@ import { useVueFlow, VueFlow } from '@vue-flow/core'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import { api } from '@/helpers/api'
 import type { AxiosError } from 'axios'
-import type { WorkflowResponse } from '@/stores/workflows'
+import type { Run, WorkflowResponse } from '@/stores/workflows'
 // import { useWorkflowsStore } from '@/stores/workflows'
 
 type StepInput = {
@@ -216,7 +209,12 @@ const runQuery = useQuery({
     return response.data
   },
   refetchInterval: (query) => {
-    return query.state.data?.status === 'RUNNING' ? 5000 : false
+    if (query.state.data?.status === 'RUNNING') {
+      return 5000
+    } else {
+      queryClient.invalidateQueries({ queryKey: ['runs', props.workflowId] })
+      return false
+    }
   }, // Refetch every 5 seconds
   retry: false,
   enabled: computed(() => Boolean(runId.value)),
@@ -227,6 +225,11 @@ const runsQuery = useQuery({
   queryFn: async () => {
     const response = await api.get(`/workflows/${props.workflowId}/runs/`)
     return response.data
+  },
+  select: (data) => {
+    return data.sort((a: Run, b: Run) => {
+      return new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
+    })
   },
 })
 

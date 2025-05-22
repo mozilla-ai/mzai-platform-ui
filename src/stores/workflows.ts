@@ -17,7 +17,7 @@ export type WorkflowResponse = {
   runs: Run[]
 }
 
-type Run = {
+export type Run = {
   id: string
   workflow_id: string
   kfp_run_id: string
@@ -28,7 +28,7 @@ type Run = {
   run_url: string
 }
 
-type StepInput = {
+export type StepInput = {
   name: string
   type: string
   required?: boolean
@@ -36,7 +36,7 @@ type StepInput = {
   description?: string
 }
 
-type Step = {
+export type Step = {
   id: string
   description: string
   inputs: StepInput[]
