@@ -333,12 +333,14 @@ const onFlowInit = () => {
 .results-container {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   flex: 1;
 }
 
 .runs-container {
   display: flex;
   flex-direction: column;
+  min-width: 0;
   flex: 1;
   overflow-y: auto;
 }
