@@ -309,10 +309,10 @@ const onFlowInit = () => {
 
 <style scoped>
 .container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  overflow-y: hidden;
+  /* display: flex;
+  flex-direction: column; */
+  /* gap: 1.5rem;
+  overflow-y: hidden; */
   height: 100vh;
 }
 
@@ -320,14 +320,14 @@ const onFlowInit = () => {
   display: flex;
   flex: 4;
   gap: 1rem;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 .bottom-container {
   display: flex;
   gap: 1rem;
   flex: 1;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 .results-container {
